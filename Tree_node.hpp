@@ -10,7 +10,7 @@ public:
     tree_node(uint64_t freq, tree_node *left, tree_node *right) : leaf(0), chr(0), freq(freq), left(left), right(right) {}
     tree_node(uint64_t freq) : leaf(0), chr(0), freq(freq), left(nullptr), right(nullptr) {}
     tree_node(int chr, uint64_t freq) : leaf(1), chr(chr), freq(freq), left(nullptr), right(nullptr) {}
-    tree_node* merge(tree_node* root){
-        return new tree_node(root->freq+left->freq,left,root);
+    tree_node* merge(tree_node* left,tree_node* right){
+        return new tree_node(right->freq+left->freq,left,right);
     }
 };
