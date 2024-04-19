@@ -43,11 +43,11 @@ public:
             heap.pop();
             tree_node *node2 = heap.top();
             heap.pop();
-            heap.push(node1->merge(node2));
+            heap.push(node1->merge(node2, node1));
         }
         root = heap.top();
     }
-    void extract_str_table(tree_node *node, std::vector<bool> str)
+    void extract_str_table_recur(tree_node *node, std::vector<bool> str)
     {
         if (node == nullptr)
         {
@@ -65,15 +65,23 @@ public:
             return;
         }
         str.push_back(0);
-        extract_str_table(node->left, str);
+        extract_str_table_recur(node->left, str);
         str.back() = 1;
-        extract_str_table(node->right, str);
+        extract_str_table_recur(node->right, str);
+    }
+    void extract_str_table()
+    {
+        extract_str_table_recur(root, std::vector<bool>());
     }
     std::vector<bool> compress_str(std::string &str)
     {
         std::vector<bool> out_str;
         for (auto chr : str)
-            out_str.emplace_back(str_table[int(chr)]);
+        {
+            std::vector<bool> temp = str_table[int(chr)];
+            for (auto bit : temp)
+                out_str.push_back(bit);
+        }
         return out_str;
     }
     std::string decompress_str(std::vector<bool> &input_str)
@@ -112,35 +120,33 @@ public:
                 {
                     if (curr->left == nullptr)
                         curr->left = new tree_node(chr, 0);
-                    else
-                        curr = curr->left;
+                    curr = curr->left;
                 }
                 else
                 {
                     if (curr->right == nullptr)
                         curr->right = new tree_node(chr, 0);
-                    else
-                        curr = curr->right;
+                    curr = curr->right;
                 }
+                continue;
             }
             if (str[i] == 0)
             {
                 if (curr->left == nullptr)
                     curr->left = new tree_node(0, nullptr, nullptr);
-                else
-                    curr = curr->left;
+                curr = curr->left;
             }
             else
             {
                 if (curr->right == nullptr)
                     curr->right = new tree_node(0, nullptr, nullptr);
-                else
-                    curr = curr->right;
+                curr = curr->right;
             }
         }
     }
-    void bulid_from_table(std::map<int, std::vector<bool>> &str_table)
+    void bulid_from_table(std::map<int, std::vector<bool>> str_table)
     {
+        this->str_table = str_table;
         for (auto i : str_table)
             this->build_from_str(i.first, i.second);
     }
