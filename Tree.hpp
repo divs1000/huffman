@@ -14,6 +14,10 @@ class Tree
 
 public:
     Tree() {}
+    std::map<int, std::vector<bool>> get_str_table()
+    {
+        return str_table;
+    }
     void build(std::string &str)
     {
         if (str.size() < 2)
@@ -95,7 +99,49 @@ public:
         }
         return result;
     }
-    void bulid_from_table(std::map<int,std::vector<bool>>& str_table){
-        
+    void build_from_str(int chr, std::vector<bool> &str)
+    {
+        if (root == nullptr)
+            root = new tree_node(0, nullptr, nullptr);
+        tree_node *curr = root;
+        for (int i = 0; i < str.size(); i++)
+        {
+            if (i == str.size() - 1)
+            {
+                if (str[i] == 0)
+                {
+                    if (curr->left == nullptr)
+                        curr->left = new tree_node(chr, 0);
+                    else
+                        curr = curr->left;
+                }
+                else
+                {
+                    if (curr->right == nullptr)
+                        curr->right = new tree_node(chr, 0);
+                    else
+                        curr = curr->right;
+                }
+            }
+            if (str[i] == 0)
+            {
+                if (curr->left == nullptr)
+                    curr->left = new tree_node(0, nullptr, nullptr);
+                else
+                    curr = curr->left;
+            }
+            else
+            {
+                if (curr->right == nullptr)
+                    curr->right = new tree_node(0, nullptr, nullptr);
+                else
+                    curr = curr->right;
+            }
+        }
+    }
+    void bulid_from_table(std::map<int, std::vector<bool>> &str_table)
+    {
+        for (auto i : str_table)
+            this->build_from_str(i.first, i.second);
     }
 };
